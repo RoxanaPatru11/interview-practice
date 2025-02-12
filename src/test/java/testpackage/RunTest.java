@@ -1,4 +1,4 @@
 package testpackage;
 
-public class ggg {
+public class RunTest {
 }
