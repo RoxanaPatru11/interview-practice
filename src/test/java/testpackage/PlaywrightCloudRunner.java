@@ -12,9 +12,13 @@ import org.reflections.util.ConfigurationBuilder;
 import pages.CartPage;
 import pages.HomePage;
 import pages.LoginPage;
+import properties.EnvironmentReader;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class PlaywrightCloudRunner {
     protected static Playwright playwright;
@@ -28,6 +32,7 @@ public class PlaywrightCloudRunner {
     public HomePage homePage;
     @PlaywrightPage
     public CartPage cartPage;
+
     Reflections reflections = new Reflections(new ConfigurationBuilder()
             .setUrls(ClasspathHelper.forPackage("pages"))
             .setScanners(new SubTypesScanner()));
@@ -37,17 +42,32 @@ public class PlaywrightCloudRunner {
         playwright = Playwright.create();
     }
 
-    @AfterAll
-    static void closeBrowsers() {
-        browserContext.close();
-        browser.close();
-    }
-
     @BeforeEach
     public void openPlaywrightPage() {
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
-        browserContext = browser.newContext();
+        String testName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+
+        BrowserType browserType;
+        String browserPropertyValue = EnvironmentReader.getProperty("browser");
+
+        if (browserPropertyValue.equals("firefox")) {
+            browserType = playwright.firefox();
+        } else if (browserPropertyValue.equals("chrome")) {
+            browserType = playwright.chromium();
+        } else {
+            browserType = playwright.webkit();
+        }
+
+        BrowserType.LaunchOptions launchOptions = new BrowserType
+                .LaunchOptions()
+                .setHeadless(false);
+
+        browser = browserType.launch(launchOptions);
+
+        browserContext = browser.newContext(new Browser.NewContextOptions()
+                .setRecordVideoDir(Paths.get("artifacts/video_" + testName)));
+
         page = browserContext.newPage();
+        page.setViewportSize(1920, 1080);
 
         initPages(this, page);
     }
@@ -74,5 +94,11 @@ public class PlaywrightCloudRunner {
                 }
             }
         }
+    }
+
+    @AfterAll
+    static void closeBrowsers() {
+        browserContext.close();
+        browser.close();
     }
 }

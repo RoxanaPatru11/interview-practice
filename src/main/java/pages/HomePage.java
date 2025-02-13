@@ -8,7 +8,6 @@ import com.microsoft.playwright.options.LoadState;
 import enums.HomeMenu;
 import enums.ProductsEnv1;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,9 @@ public class HomePage implements CheckIfYouAreOnPage {
     private static final String ADD_TO_CART_BUTTON = "[data-test^='add-to-cart-']";
     private static final String REMOVE_BUTTON = "[data-test^='remove-']";
     private static final String SHOPPING_CART_BADGE = "[id='shopping_cart_container']";
+
     public final Page homepage;
+
     public HomePage(Page homepage) {
         this.homepage = homepage;
     }
@@ -55,7 +56,7 @@ public class HomePage implements CheckIfYouAreOnPage {
         homepage.locator(PRIMARY_HEADER).locator(MENU_BUTTON).click();
     }
 
-    public List<Map<String, Object>> addProductsToCart(List <ProductsEnv1> products, List<Map<String, Object>> existingProductsInCart) {
+    public List<Map<String, Object>> addProductsToCart(List<ProductsEnv1> products, List<Map<String, Object>> existingProductsInCart) {
         int noOfExpectedProductsInCart = extractNoOfExistingProductsFromCart();
 
         for (ProductsEnv1 product : products) {
@@ -67,7 +68,7 @@ public class HomePage implements CheckIfYouAreOnPage {
 
             assertTrue(itemDescription.querySelector(REMOVE_BUTTON).isEnabled());
 
-            int noOfActualProducts = Integer.valueOf(homepage.querySelector(SHOPPING_CART_BADGE).innerText());
+            int noOfActualProducts = Integer.parseInt(homepage.querySelector(SHOPPING_CART_BADGE).innerText());
             noOfExpectedProductsInCart++;
             assertEquals("Product wasn't added to the cart", noOfExpectedProductsInCart, noOfActualProducts);
 
@@ -76,6 +77,7 @@ public class HomePage implements CheckIfYouAreOnPage {
             Map<String, Object> productDetails = new HashMap<>();
             productDetails.put("productName", product.getProductName());
             productDetails.put("productPrice", itemPrice);
+            productDetails.put("quantity", 1);
 
             existingProductsInCart.add(productDetails);
         }
@@ -94,15 +96,15 @@ public class HomePage implements CheckIfYouAreOnPage {
         itemDescription.querySelector(REMOVE_BUTTON).click();
         assertTrue(itemDescription.querySelector(ADD_TO_CART_BUTTON).isEnabled());
 
-        assertEquals("Product wasn't removed from the cart", noOfExistingProducts-1, extractNoOfExistingProductsFromCart());
+        assertEquals("Product wasn't removed from the cart", noOfExistingProducts - 1, extractNoOfExistingProductsFromCart());
     }
 
     int extractNoOfExistingProductsFromCart() {
-        int noOfExistingProducts=0;
-        String existingProducts= homepage.querySelector(SHOPPING_CART_BADGE).innerText();
+        int noOfExistingProducts = 0;
+        String existingProducts = homepage.querySelector(SHOPPING_CART_BADGE).innerText();
 
-        if(!existingProducts.isEmpty()) {
-            noOfExistingProducts=Integer.valueOf(existingProducts);
+        if (!existingProducts.isEmpty()) {
+            noOfExistingProducts = Integer.parseInt(existingProducts);
         }
 
         return noOfExistingProducts;

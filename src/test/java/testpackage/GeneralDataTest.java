@@ -2,7 +2,6 @@ package testpackage;
 
 import enums.HomeMenu;
 import enums.ProductsEnv1;
-import enums.ProductsEnv2;
 import org.junit.jupiter.api.BeforeEach;
 import properties.EnvironmentReader;
 
@@ -30,20 +29,20 @@ public class GeneralDataTest extends PlaywrightCloudRunner {
         homePage.successfullyCheckIfYouAreOnPage();
     }
 
-    public void navigateToMenu(HomeMenu homeMenu){
+    public void navigateToMenu(HomeMenu homeMenu) {
         homePage.openMenu();
         homePage.navigateToMenu(homeMenu);
     }
 
-    public void navigateToCart(){
+    public void navigateToCart() {
         homePage.navigateToMenu(HomeMenu.SHOPPING_CART);
     }
 
-    public List<Map<String, Object>> removeItemFromTheList(List<Map<String, Object>> existingProductsInCart){
+    public List<Map<String, Object>> removeItemFromTheList(List<Map<String, Object>> existingProductsInCart, ProductsEnv1 productToBeRemoved) {
         Iterator<Map<String, Object>> iterator = existingProductsInCart.iterator();
         while (iterator.hasNext()) {
             Map<String, Object> product = iterator.next();
-            if ("Sauce Labs Backpack".equals(product.get("productName"))) {
+            if (productToBeRemoved.getProductName().equals(product.get("productName"))) {
                 iterator.remove();
                 break;
             }
