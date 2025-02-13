@@ -5,7 +5,13 @@ import com.microsoft.playwright.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import pages.BasePage;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import pages.CartPage;
+import pages.HomePage;
+import pages.LoginPage;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -17,7 +23,14 @@ public class PlaywrightCloudRunner {
     protected static Page page;
 
     @PlaywrightPage
-    protected BasePage basePage;
+    public LoginPage loginPage;
+    @PlaywrightPage
+    public HomePage homePage;
+    @PlaywrightPage
+    public CartPage cartPage;
+    Reflections reflections = new Reflections(new ConfigurationBuilder()
+            .setUrls(ClasspathHelper.forPackage("pages"))
+            .setScanners(new SubTypesScanner()));
 
     @BeforeAll
     public static void createPlaywrightInstance() {
@@ -36,21 +49,28 @@ public class PlaywrightCloudRunner {
         browserContext = browser.newContext();
         page = browserContext.newPage();
 
-        //BasePage basePage= new BasePage(page);
-
-        initPage(this, page);
+        initPages(this, page);
     }
 
-    private void initPage(Object object, Page page) {
-        Class<?> clazz = object.getClass().getSuperclass();
+    public void initPages(Object object, Page page) {
+        Class<?> clazz = object.getClass().getSuperclass().getName().contains("PlaywrightCloudRunner") ?
+                object.getClass().getSuperclass() : object.getClass().getSuperclass().getSuperclass();
+
         for (Field field : clazz.getDeclaredFields()) {
+            field.setAccessible(true);
+
             if (field.isAnnotationPresent(PlaywrightPage.class)) {
                 Class<?>[] type = {Page.class};
                 try {
-                    field.set(this, field.getType().getConstructor(type).newInstance(page));
-                } catch (IllegalAccessException | InstantiationException | InvocationTargetException |
+                    if (reflections.getSubTypesOf(field.getType()).size() >= 2) {
+                        var subTypes = reflections.getSubTypesOf(field.getType()).stream().toList();
+                        field.set(object, subTypes.get(0).getConstructor(type).newInstance(page));
+                    } else {
+                        field.set(object, field.getType().getConstructor(type).newInstance(page));
+                    }
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                          NoSuchMethodException e) {
-                    System.out.println("Did not manage to call constructor for playwright page with name " + field.getName());
+                    System.out.println(e.getMessage());
                 }
             }
         }
