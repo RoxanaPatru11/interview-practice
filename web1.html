@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-color: green;
+        }
+        #container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #descriptionLabel, #description, #fullNameLabel, #fullName {
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+    <script type="text/javascript">
+
+        window.onload = function() {
+            var accept = confirm("We use cookies to give you the best experience. Do you accept our cookies?");
+            if (accept) {
+                $('#secondPopup').modal('show'); 
+            }
+        }
+        
+        // Create request button logic
+        var isRequestClicked = false;
+        function createRequest() {
+            var descriptionField = document.getElementById('description');
+            var descriptionLabel = document.getElementById('descriptionLabel');
+            if (!isRequestClicked) {
+                descriptionLabel.style.display="block";
+                descriptionField.style.display="block";
+                isRequestClicked = true;
+            } else {
+                descriptionLabel.style.display="none";
+                descriptionField.style.display="none";
+                isRequestClicked = false;
+            }
+        }
+
+        // Load New Button logic
+        var timer = null;
+        var isClicked = false;
+        function loadNewInput() {
+            clearTimeout(timer);
+            var fullNameField = document.getElementById('fullName');
+            var fullNameLabel = document.getElementById('fullNameLabel');
+
+            if (!isClicked) {
+                isClicked = true;
+                timer = setTimeout(function() {
+                    fullNameLabel.style.display = 'block';
+                    fullNameField.style.display = 'block';
+                }, 60000); // 60 seconds
+            } else {
+                fullNameField.style.display = 'none';
+                fullNameLabel.style.display = 'none';
+                isClicked = false;
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <div id="container">
+        <button id="createRequestButton" onclick="createRequest()">Create Request</button>
+        <label id="descriptionLabel" for="description">Description: </label>
+        <input type="text" id="description">
+
+        <button id="secondButton" onclick="loadNewInput()">Load New Button</button>
+        <label id="fullNameLabel" for="fullName">Full Name: </label>
+        <input type="text" id="fullName">
+    </div>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="secondPopup">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirmation</h4>
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    Please confirm to proceed
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Accept</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Reject</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
