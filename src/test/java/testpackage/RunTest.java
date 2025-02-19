@@ -50,7 +50,6 @@ public class RunTest extends GeneralDataTest {
         navigateToCart();
         cartPage.checkTheCart(existingProductsInCart);
         cartPage.checkoutOrder(ClientDetails.CLIENT1, existingProductsInCart);
-
         navigateToMenu(HomeMenu.LOGOUT);
     }
 }
