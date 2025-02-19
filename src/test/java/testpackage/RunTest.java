@@ -3,6 +3,7 @@ package testpackage;
 import enums.ClientDetails;
 import enums.HomeMenu;
 import enums.ProductsEnv1;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 public class RunTest extends GeneralDataTest {
 
+    @Tag("myTest")
     @Test
     public void addAndRemoveProducts() {
         System.out.println("Add products in the cart");
@@ -48,7 +50,6 @@ public class RunTest extends GeneralDataTest {
         navigateToCart();
         cartPage.checkTheCart(existingProductsInCart);
         cartPage.checkoutOrder(ClientDetails.CLIENT1, existingProductsInCart);
-
         navigateToMenu(HomeMenu.LOGOUT);
     }
 }
