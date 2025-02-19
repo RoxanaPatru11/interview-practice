@@ -9,6 +9,7 @@ public class LoginPage {
     private static final String PASSWORD = "[data-test='password']";
     private static final String LOGIN_BUTTON = "[data-test='login-button']";
     public final Page loginPage;
+
     public LoginPage(Page page) {
         this.loginPage = page;
     }
