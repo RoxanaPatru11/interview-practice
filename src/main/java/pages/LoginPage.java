@@ -23,5 +23,4 @@ public class LoginPage {
     public void navigateTo(String url) {
         loginPage.navigate(url);
     }
-
 }
