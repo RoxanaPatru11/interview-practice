@@ -9,6 +9,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
+import pages.AlertsPage;
 import pages.CartPage;
 import pages.HomePage;
 import pages.LoginPage;
@@ -32,6 +33,8 @@ public class PlaywrightCloudRunner {
     public HomePage homePage;
     @PlaywrightPage
     public CartPage cartPage;
+    @PlaywrightPage
+    public AlertsPage alertsPage;
 
     Reflections reflections = new Reflections(new ConfigurationBuilder()
             .setUrls(ClasspathHelper.forPackage("pages"))
