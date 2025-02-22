@@ -2,10 +2,9 @@ package DataStructure;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+
+import static java.util.Collections.sort;
 
 public class ArraysANDArrayLists {
 
@@ -62,7 +61,6 @@ public class ArraysANDArrayLists {
         System.out.println(mylists.getFirst());
         System.out.println(mylists.getLast());
         System.out.println(mylists.get(0));
-
     }
 
     @Test
@@ -80,8 +78,24 @@ public class ArraysANDArrayLists {
         System.out.println(maps);
     }
 
+    @Test
+    public void twoSum(){
+        int target=9;
+        Integer[] positions= new Integer[2];
+        Integer[] numbers= {2,7,11,15};
 
+        for(int i=0; i < numbers.length-1; i++){
+            for(int j=i+1; j<numbers.length;j++){
+                if(numbers[i]+numbers[j]==target){
+                    positions[0]=i;
+                    positions[1]=j;
+                }
 
+            }
+        }
+
+        System.out.println(Arrays.toString(positions));
+    }
 
 
 
